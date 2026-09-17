@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
-import '../widgets/maak_logo.dart';
+import 'app_theme.dart';
+import 'maak_logo.dart';
 import 'help_seeker_registration_screen.dart';
 import 'volunteer_registration_screen.dart';
 

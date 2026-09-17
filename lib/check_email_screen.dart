@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
+import 'app_theme.dart';
 import 'login_screen.dart';
 
 class CheckEmailScreen extends StatelessWidget {

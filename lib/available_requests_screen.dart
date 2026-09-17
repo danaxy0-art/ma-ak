@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../models/sample_data.dart';
-import '../../theme/app_theme.dart';
+import 'sample_data.dart';
+import 'app_theme.dart';
 import 'request_details_screen.dart';
 
 class AvailableRequestsScreen extends StatefulWidget {

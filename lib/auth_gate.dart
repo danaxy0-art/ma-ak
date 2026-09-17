@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../services/supabase_service.dart';
+import 'supabase_service.dart';
 import 'choose_role_screen.dart';
-import 'patient/patient_shell.dart';
-import 'volunteer/volunteer_shell.dart';
+import 'patient_shell.dart';
+import 'volunteer_shell.dart';
 
 /// Shown at app start when a session already exists (the user closed the
 /// app without logging out). Looks up their saved role and routes them

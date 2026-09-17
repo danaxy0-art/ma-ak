@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../services/supabase_service.dart';
-import '../theme/app_theme.dart';
-import '../widgets/maak_logo.dart';
+import 'supabase_service.dart';
+import 'app_theme.dart';
+import 'maak_logo.dart';
 import 'check_email_screen.dart';
 import 'login_screen.dart';
 

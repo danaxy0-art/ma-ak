@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../widgets/maak_bottom_nav.dart';
-import '../shared/messages_tab.dart';
+import 'maak_bottom_nav.dart';
+import 'messages_tab.dart';
 import 'schedule_tab.dart';
 import 'volunteer_home_tab.dart';
 import 'volunteer_profile_tab.dart';
