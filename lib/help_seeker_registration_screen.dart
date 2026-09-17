@@ -1,30 +1,38 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import '../services/supabase_service.dart';
-import '../theme/app_theme.dart';
-import '../widgets/maak_logo.dart';
-import 'volunteer/volunteer_shell.dart';
-import 'help_seeker_registration_screen.dart' show kChronicConditions, kLanguages;
+import 'supabase_service.dart';
+import 'app_theme.dart';
+import 'maak_logo.dart';
+import 'patient_shell.dart';
 
-class VolunteerRegistrationScreen extends StatefulWidget {
-  const VolunteerRegistrationScreen({super.key});
+const List<String> kChronicConditions = [
+  'Diabetes',
+  'Hypertension',
+  'Asthma',
+  'Chronic kidney disease',
+  'Rheumatoid arthritis',
+  'Other',
+];
+
+const List<String> kLanguages = ['Arabic', 'English', 'French'];
+
+class HelpSeekerRegistrationScreen extends StatefulWidget {
+  const HelpSeekerRegistrationScreen({super.key});
 
   @override
-  State<VolunteerRegistrationScreen> createState() =>
-      _VolunteerRegistrationScreenState();
+  State<HelpSeekerRegistrationScreen> createState() =>
+      _HelpSeekerRegistrationScreenState();
 }
 
-class _VolunteerRegistrationScreenState
-    extends State<VolunteerRegistrationScreen> {
+class _HelpSeekerRegistrationScreenState
+    extends State<HelpSeekerRegistrationScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _experienceController = TextEditingController();
+  final _descriptionController = TextEditingController();
   final _otherConditionController = TextEditingController();
   String? _condition;
   String? _language;
-  PlatformFile? _pickedFile;
   bool _obscurePassword = true;
   bool _loading = false;
 
@@ -35,52 +43,37 @@ class _VolunteerRegistrationScreenState
     _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-    _experienceController.dispose();
+    _descriptionController.dispose();
     _otherConditionController.dispose();
     super.dispose();
   }
 
-  Future<void> _pickFile() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf', 'jpg', 'jpeg', 'png'],
-      withData: true,
-    );
-    if (result != null && result.files.isNotEmpty) {
-      setState(() => _pickedFile = result.files.first);
-    }
-  }
-
-  Future<void> _submit() async {
+  Future<void> _createAccount() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _loading = true);
     try {
       // 1) Create the auth account itself (name/email/password) — this
-      //    screen doubles as the sign-up step for the Volunteer path.
+      //    screen doubles as the sign-up step for the Help Seeker path.
       await SupabaseService.signUp(
         fullName: _nameController.text.trim(),
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
       // 2) Record the chosen role.
-      await SupabaseService.setRole('volunteer');
-      String? documentUrl;
-      if (_pickedFile != null && _pickedFile!.bytes != null) {
-        documentUrl = await SupabaseService.uploadVerificationDocument(
-          fileBytes: _pickedFile!.bytes!,
-          fileName: _pickedFile!.name,
-        );
-      }
-      await SupabaseService.submitVolunteerRegistration(
-        conditionExperience:
+      await SupabaseService.setRole('help_seeker');
+      // 3) Save the Help Seeker specific details. If they chose "Other",
+      //    send the condition they typed instead of the literal word.
+      await SupabaseService.submitHelpSeekerRegistration(
+        chronicCondition:
             _isOtherCondition ? _otherConditionController.text.trim() : _condition!,
         preferredLanguage: _language!,
-        experienceDescription: _experienceController.text.trim(),
-        verificationDocumentUrl: documentUrl,
+        description: _descriptionController.text.trim().isEmpty
+            ? null
+            : _descriptionController.text.trim(),
       );
       if (!mounted) return;
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const VolunteerShell()),
+        MaterialPageRoute(builder: (_) => const PatientShell()),
         (route) => false,
       );
     } catch (e) {
@@ -113,7 +106,7 @@ class _VolunteerRegistrationScreenState
                 const MaakLogo(iconSize: 32),
                 const SizedBox(height: 20),
                 const Text(
-                  'Volunteer Registration',
+                  'Help Seeker Registration',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20,
@@ -123,7 +116,7 @@ class _VolunteerRegistrationScreenState
                 ),
                 const SizedBox(height: 6),
                 const Text(
-                  'Share your experience and help others',
+                  'Tell us a little about yourself',
                   textAlign: TextAlign.center,
                   style: TextStyle(color: AppColors.textMuted),
                 ),
@@ -171,11 +164,11 @@ class _VolunteerRegistrationScreenState
                       (v == null || v.length < 6) ? 'At least 6 characters' : null,
                 ),
                 const SizedBox(height: 20),
-                const _FieldLabel('Chronic condition experience'),
+                const _FieldLabel('Chronic condition'),
                 DropdownButtonFormField<String>(
                   value: _condition,
                   decoration:
-                      const InputDecoration(hintText: 'Select condition'),
+                      const InputDecoration(hintText: 'Select your condition'),
                   items: kChronicConditions
                       .map((c) => DropdownMenuItem(value: c, child: Text(c)))
                       .toList(),
@@ -187,10 +180,10 @@ class _VolunteerRegistrationScreenState
                   TextFormField(
                     controller: _otherConditionController,
                     decoration: const InputDecoration(
-                      hintText: 'Please specify the condition',
+                      hintText: 'Please specify your condition',
                     ),
                     validator: (v) => (_isOtherCondition && (v == null || v.trim().isEmpty))
-                        ? 'Please specify the condition'
+                        ? 'Please specify your condition'
                         : null,
                   ),
                 ],
@@ -206,57 +199,19 @@ class _VolunteerRegistrationScreenState
                   validator: (v) => v == null ? 'Required' : null,
                 ),
                 const SizedBox(height: 16),
-                const _FieldLabel('Experience description'),
+                const _FieldLabel('Short description (optional)'),
                 TextFormField(
-                  controller: _experienceController,
+                  controller: _descriptionController,
                   maxLength: 300,
                   maxLines: 4,
                   decoration: const InputDecoration(
                     hintText:
-                        'Tell us about your lived experience and how you can support others...',
-                  ),
-                  validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? 'Required' : null,
-                ),
-                const SizedBox(height: 16),
-                const _FieldLabel('Verification document (optional)'),
-                InkWell(
-                  onTap: _pickFile,
-                  borderRadius: BorderRadius.circular(12),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 22),
-                    decoration: BoxDecoration(
-                      color: AppColors.fieldFill,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: AppColors.fieldBorder,
-                        style: BorderStyle.solid,
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        const Icon(Icons.upload_outlined,
-                            color: AppColors.primaryNavy),
-                        const SizedBox(height: 6),
-                        Text(
-                          _pickedFile?.name ?? 'Upload file',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.textDark),
-                        ),
-                        const SizedBox(height: 2),
-                        const Text(
-                          'PDF, JPG or PNG',
-                          style: TextStyle(
-                              fontSize: 12, color: AppColors.textMuted),
-                        ),
-                      ],
-                    ),
+                        "Tell us a bit about your experience or what kind of support you're looking for...",
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 8),
                 ElevatedButton(
-                  onPressed: _loading ? null : _submit,
+                  onPressed: _loading ? null : _createAccount,
                   child: _loading
                       ? const SizedBox(
                           height: 20,
@@ -264,7 +219,7 @@ class _VolunteerRegistrationScreenState
                           child: CircularProgressIndicator(
                               color: Colors.white, strokeWidth: 2),
                         )
-                      : const Text('Submit application'),
+                      : const Text('Create account'),
                 ),
                 const SizedBox(height: 24),
               ],

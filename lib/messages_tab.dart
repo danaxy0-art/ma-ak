@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../models/sample_data.dart';
-import '../../theme/app_theme.dart';
+import 'sample_data.dart';
+import 'app_theme.dart';
 import 'chat_screen.dart';
 
 class MessagesTab extends StatelessWidget {

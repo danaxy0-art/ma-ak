@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import '../../theme/app_theme.dart';
-import 'find_volunteer_screen.dart';
-import 'journey_tab.dart';
-import 'resources_screen.dart';
-import '../shared/messages_tab.dart';
-import 'patient_profile_tab.dart';
+import 'app_theme.dart';
+import 'messages_tab.dart';
+import 'available_requests_screen.dart';
+import 'schedule_tab.dart';
+import 'volunteer_profile_tab.dart';
 
-class PatientHomeTab extends StatelessWidget {
-  final String patientName;
-  const PatientHomeTab({super.key, this.patientName = 'Rana'});
+class VolunteerHomeTab extends StatelessWidget {
+  final String volunteerName;
+  const VolunteerHomeTab({super.key, this.volunteerName = 'Sarah'});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +16,7 @@ class PatientHomeTab extends StatelessWidget {
         automaticallyImplyLeading: false,
         title: Row(
           children: [
-            Text('Hello $patientName',
+            Text('Hello $volunteerName',
                 style: const TextStyle(
                     color: AppColors.textDark, fontWeight: FontWeight.w700, fontSize: 18)),
             const SizedBox(width: 6),
@@ -27,18 +26,14 @@ class PatientHomeTab extends StatelessWidget {
         actions: const [
           Padding(
             padding: EdgeInsets.only(right: 16),
-            child: CircleAvatar(
-              radius: 16,
-              backgroundColor: AppColors.selectedCardFill,
-              child: Icon(Icons.person, color: AppColors.primaryNavy, size: 18),
-            ),
+            child: Icon(Icons.notifications_outlined, color: AppColors.primaryNavy),
           ),
         ],
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          const Text("You're not alone. We're here with you.",
+          const Text('Your support makes a real difference.',
               style: TextStyle(color: AppColors.textMuted)),
           const SizedBox(height: 16),
           Container(
@@ -50,19 +45,19 @@ class PatientHomeTab extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Find the right volunteer\nfor your journey',
+                const Text('Be the support\nsomeone needs',
                     style: TextStyle(
                         fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.textDark)),
                 const SizedBox(height: 6),
-                const Text('Get matched with someone who understands you.',
+                const Text('Share your experience, make a positive impact.',
                     style: TextStyle(color: AppColors.textMuted)),
                 const SizedBox(height: 14),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(minimumSize: const Size(160, 44)),
                   onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const FindVolunteerScreen()),
+                    MaterialPageRoute(builder: (_) => const AvailableRequestsScreen()),
                   ),
-                  child: const Text('Find a volunteer'),
+                  child: const Text('View requests'),
                 ),
               ],
             ),
@@ -77,71 +72,81 @@ class PatientHomeTab extends StatelessWidget {
             childAspectRatio: 1.5,
             children: [
               _QuickAction(
-                icon: Icons.timeline_outlined,
-                title: 'My Journey',
-                subtitle: 'Track your progress',
+                icon: Icons.list_alt_outlined,
+                title: 'Requests',
+                subtitle: 'View new requests',
                 onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const JourneyTab()),
+                  MaterialPageRoute(builder: (_) => const AvailableRequestsScreen()),
+                ),
+              ),
+              _QuickAction(
+                icon: Icons.calendar_today_outlined,
+                title: 'Schedule',
+                subtitle: 'Your upcoming shifts',
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const ScheduleTab()),
                 ),
               ),
               _QuickAction(
                 icon: Icons.chat_bubble_outline,
                 title: 'Messages',
-                subtitle: 'Chat with your volunteer',
+                subtitle: 'Chat with patients',
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => const MessagesTab()),
                 ),
               ),
               _QuickAction(
-                icon: Icons.menu_book_outlined,
-                title: 'Resources',
-                subtitle: 'Helpful articles & tips',
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const ResourcesScreen()),
-                ),
-              ),
-              _QuickAction(
                 icon: Icons.person_outline,
                 title: 'Profile',
-                subtitle: 'Your account',
+                subtitle: 'Your information',
                 onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const PatientProfileTab()),
+                  MaterialPageRoute(builder: (_) => const VolunteerProfileTab()),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 20),
-          const Text('Upcoming',
+          const Text('Your Impact',
               style: TextStyle(fontWeight: FontWeight.w700, color: AppColors.textDark)),
           const SizedBox(height: 10),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: AppColors.fieldFill,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: AppColors.fieldBorder),
-            ),
-            child: Row(
-              children: [
-                const CircleAvatar(
-                  backgroundColor: AppColors.selectedCardFill,
-                  child: Icon(Icons.chat_bubble_outline, color: AppColors.primaryNavy),
-                ),
-                const SizedBox(width: 12),
-                const Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Chat with your volunteer',
-                          style: TextStyle(fontWeight: FontWeight.w600, color: AppColors.textDark)),
-                      Text('Today · 4:00 PM', style: TextStyle(color: AppColors.textMuted, fontSize: 12)),
-                    ],
-                  ),
-                ),
-                const Icon(Icons.chevron_right, color: AppColors.textMuted),
-              ],
-            ),
+          Row(
+            children: const [
+              Expanded(child: _StatCard(value: '2', label: 'Active mentees')),
+              SizedBox(width: 10),
+              Expanded(child: _StatCard(value: '6', label: 'Total chats')),
+              SizedBox(width: 10),
+              Expanded(child: _StatCard(value: '28', label: 'Hours volunteered')),
+            ],
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatCard extends StatelessWidget {
+  final String value;
+  final String label;
+  const _StatCard({required this.value, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      decoration: BoxDecoration(
+        color: AppColors.fieldFill,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppColors.fieldBorder),
+      ),
+      child: Column(
+        children: [
+          Text(value,
+              style: const TextStyle(
+                  fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.primaryNavy)),
+          const SizedBox(height: 4),
+          Text(label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 11, color: AppColors.textMuted)),
         ],
       ),
     );

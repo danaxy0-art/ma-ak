@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import '../services/supabase_service.dart';
-import '../theme/app_theme.dart';
-import '../widgets/maak_logo.dart';
+import 'supabase_service.dart';
+import 'app_theme.dart';
+import 'maak_logo.dart';
 import 'reset_password_screen.dart';
 import 'choose_role_screen.dart';
-import 'patient/patient_shell.dart';
-import 'volunteer/volunteer_shell.dart';
+import 'patient_shell.dart';
+import 'volunteer_shell.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

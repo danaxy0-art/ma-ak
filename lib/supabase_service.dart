@@ -45,6 +45,14 @@ class SupabaseService {
     return client.auth.signOut();
   }
 
+  static Future<void> updateFullName(String fullName) async {
+    final userId = currentUser!.id;
+    await client.from('profiles').upsert({
+      'id': userId,
+      'full_name': fullName,
+    });
+  }
+
   static User? get currentUser => client.auth.currentUser;
 
   // ---------------- Profiles / role ----------------
@@ -71,6 +79,51 @@ class SupabaseService {
     return row?['role'] as String?;
   }
 
+  static Future<Map<String, dynamic>> loadProfileForEdit({
+    required String role,
+  }) async {
+    final userId = currentUser?.id;
+    if (userId == null) return {};
+
+    final profileRow = await client
+        .from('profiles')
+        .select('full_name')
+        .eq('id', userId)
+        .maybeSingle();
+
+    Map<String, dynamic> data = {
+      'full_name': profileRow?['full_name'] as String?,
+    };
+
+    if (role == 'help_seeker') {
+      final row = await client
+          .from('help_seeker_profiles')
+          .select('chronic_condition, preferred_language, description')
+          .eq('user_id', userId)
+          .maybeSingle();
+      data = {
+        ...data,
+        'condition': row?['chronic_condition'] as String?,
+        'preferred_language': row?['preferred_language'] as String?,
+        'description': row?['description'] as String?,
+      };
+    } else {
+      final row = await client
+          .from('volunteer_profiles')
+          .select('condition_experience, preferred_language, experience_description')
+          .eq('user_id', userId)
+          .maybeSingle();
+      data = {
+        ...data,
+        'condition': row?['condition_experience'] as String?,
+        'preferred_language': row?['preferred_language'] as String?,
+        'experience': row?['experience_description'] as String?,
+      };
+    }
+
+    return data;
+  }
+
   /// Completes the Help Seeker registration form.
   static Future<void> submitHelpSeekerRegistration({
     required String chronicCondition,
@@ -83,6 +136,34 @@ class SupabaseService {
       'chronic_condition': chronicCondition,
       'preferred_language': preferredLanguage,
       'description': description,
+    });
+  }
+
+  static Future<void> updateHelpSeekerProfile({
+    required String chronicCondition,
+    required String preferredLanguage,
+    String? description,
+  }) async {
+    final userId = currentUser!.id;
+    await client.from('help_seeker_profiles').upsert({
+      'user_id': userId,
+      'chronic_condition': chronicCondition,
+      'preferred_language': preferredLanguage,
+      'description': description,
+    });
+  }
+
+  static Future<void> updateVolunteerProfile({
+    required String conditionExperience,
+    required String preferredLanguage,
+    required String experienceDescription,
+  }) async {
+    final userId = currentUser!.id;
+    await client.from('volunteer_profiles').upsert({
+      'user_id': userId,
+      'condition_experience': conditionExperience,
+      'preferred_language': preferredLanguage,
+      'experience_description': experienceDescription,
     });
   }
 

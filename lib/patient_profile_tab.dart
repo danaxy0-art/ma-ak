@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../services/supabase_service.dart';
-import '../../theme/app_theme.dart';
-import '../../widgets/logged_out_dialog.dart';
-import '../login_screen.dart';
-import '../shared/settings_screen.dart';
+import 'supabase_service.dart';
+import 'app_theme.dart';
+import 'edit_profile_screen.dart';
+import 'logged_out_dialog.dart';
+import 'login_screen.dart';
+import 'settings_screen.dart';
 
 class PatientProfileTab extends StatelessWidget {
   const PatientProfileTab({super.key});
@@ -47,7 +48,11 @@ class PatientProfileTab extends StatelessWidget {
             leading: const Icon(Icons.edit_outlined, color: AppColors.primaryNavy),
             title: const Text('Edit profile', style: TextStyle(color: AppColors.textDark)),
             trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
-            onTap: () {},
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const EditProfileScreen(role: 'help_seeker'),
+              ),
+            ),
           ),
           ListTile(
             leading: const Icon(Icons.timeline_outlined, color: AppColors.primaryNavy),

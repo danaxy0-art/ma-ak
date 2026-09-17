@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../models/sample_data.dart';
-import '../../theme/app_theme.dart';
+import 'sample_data.dart';
+import 'app_theme.dart';
 
 class ScheduleTab extends StatelessWidget {
   const ScheduleTab({super.key});

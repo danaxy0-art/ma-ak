@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
+import 'app_theme.dart';
 
 /// Shows the "You're logged out" confirmation modal from the mockups.
 /// Call `showLoggedOutDialog(context)` right after SupabaseService.signOut().
