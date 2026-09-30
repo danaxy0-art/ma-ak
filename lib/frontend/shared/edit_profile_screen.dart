@@ -3,6 +3,7 @@ import '../theme/app_theme.dart';
 import '../auth/help_seeker_registration_screen.dart'
     show kChronicConditions, kLanguages;
 import '../../backend/services/supabase_service.dart';
+import '../widgets/dropdown.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final String role;
@@ -163,21 +164,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       const SizedBox(height: 16),
                       if (!_isVolunteer) ...[
                         const _FieldLabel('Chronic condition'),
-                        DropdownButtonFormField<String>(
-                          initialValue: _condition,
-                          decoration: const InputDecoration(
-                            hintText: 'Select your condition',
-                          ),
-                          items: kChronicConditions
-                              .map((item) => DropdownMenuItem(
-                                    value: item,
-                                    child: Text(item),
-                                  ))
-                              .toList(),
-                          onChanged: (value) =>
-                              setState(() => _condition = value),
-                          validator: (value) =>
-                              value == null ? 'Required' : null,
+                        AppDropdown(
+                          value: _condition,
+                          hint: 'Select your condition',
+                          options: kChronicConditions,
+                          onChanged: (v) => setState(() => _condition = v),
+                          validator: (v) => v == null ? 'Required' : null,
                         ),
                         if (_isOtherCondition) ...[
                           const SizedBox(height: 12),
@@ -194,21 +186,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ],
                         const SizedBox(height: 16),
                         const _FieldLabel('Preferred language'),
-                        DropdownButtonFormField<String>(
-                          initialValue: _language,
-                          decoration: const InputDecoration(
-                            hintText: 'Select language',
-                          ),
-                          items: kLanguages
-                              .map((lang) => DropdownMenuItem(
-                                    value: lang,
-                                    child: Text(lang),
-                                  ))
-                              .toList(),
-                          onChanged: (value) =>
-                              setState(() => _language = value),
-                          validator: (value) =>
-                              value == null ? 'Required' : null,
+                        AppDropdown(
+                          value: _language,
+                          hint: 'Select language',
+                          options: kLanguages,
+                          onChanged: (v) => setState(() => _language = v),
+                          validator: (v) => v == null ? 'Required' : null,
                         ),
                         const SizedBox(height: 16),
                         const _FieldLabel('Short description (optional)'),
@@ -223,17 +206,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                       ] else ...[
                         const _FieldLabel('Condition experience'),
-                        DropdownButtonFormField<String>(
-                          initialValue: _condition,
-                          decoration: const InputDecoration(
-                            hintText: 'Select condition',
-                          ),
-                          items: kChronicConditions
-                              .map((item) => DropdownMenuItem(
-                                    value: item,
-                                    child: Text(item),
-                                  ))
-                              .toList(),
+                        AppDropdown(
+                          value: _condition,
+                          hint: 'Select condition',
+                          options: kChronicConditions,
                           onChanged: (value) =>
                               setState(() => _condition = value),
                           validator: (value) =>
@@ -254,17 +230,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ],
                         const SizedBox(height: 16),
                         const _FieldLabel('Preferred language'),
-                        DropdownButtonFormField<String>(
-                          initialValue: _language,
-                          decoration: const InputDecoration(
-                            hintText: 'Select language',
-                          ),
-                          items: kLanguages
-                              .map((lang) => DropdownMenuItem(
-                                    value: lang,
-                                    child: Text(lang),
-                                  ))
-                              .toList(),
+                        AppDropdown(
+                          value: _language,
+                          hint: 'Select language',
+                          options: kLanguages,
                           onChanged: (value) =>
                               setState(() => _language = value),
                           validator: (value) =>
