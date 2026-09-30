@@ -3,6 +3,7 @@ import '../../backend/services/supabase_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/maak_logo.dart';
 import '../patient/patient_shell.dart';
+import '../widgets/dropdown.dart';
 
 const List<String> kChronicConditions = [
   'Diabetes',
@@ -204,25 +205,14 @@ class _HelpSeekerRegistrationScreenState
 
                 const _FieldLabel('Chronic condition'),
 
-                DropdownButtonFormField<String>(
-                  initialValue: _condition,
-                  decoration: const InputDecoration(
-                    hintText: 'Select your condition',
-                  ),
-                  items: kChronicConditions
-                      .map(
-                        (c) => DropdownMenuItem(
-                          value: c,
-                          child: Text(c),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: (v) {
-                    setState(() => _condition = v);
-                  },
+                AppDropdown(
+                  value: _condition,
+                  hint: 'Select your condition',
+                  options: kChronicConditions,
+                  onChanged: (v) => setState(() => _condition = v),
                   validator: (v) => v == null ? 'Required' : null,
                 ),
-
+              
                 if (_isOtherCondition) ...[
                   const SizedBox(height: 12),
 
@@ -243,25 +233,14 @@ class _HelpSeekerRegistrationScreenState
 
                 const _FieldLabel('Preferred language'),
 
-                DropdownButtonFormField<String>(
-                  initialValue: _language,
-                  decoration: const InputDecoration(
-                    hintText: 'Select language',
-                  ),
-                  items: kLanguages
-                      .map(
-                        (l) => DropdownMenuItem(
-                          value: l,
-                          child: Text(l),
-                        ),
-                      )
-                      .toList(),
-                  onChanged: (v) {
-                    setState(() => _language = v);
-                  },
+                AppDropdown(
+                  value: _language,
+                  hint: 'Select language',
+                  options: kLanguages,
+                  onChanged: (v) => setState(() => _language = v),
                   validator: (v) => v == null ? 'Required' : null,
                 ),
-
+              
                 const SizedBox(height: 16),
 
                 const _FieldLabel('Short description (optional)'),
