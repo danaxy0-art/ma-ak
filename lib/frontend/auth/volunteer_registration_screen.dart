@@ -6,6 +6,7 @@ import '../widgets/maak_logo.dart';
 import '../volunteer/volunteer_pending_screen.dart';
 import 'help_seeker_registration_screen.dart'
     show kChronicConditions, kLanguages;
+import '../widgets/dropdown.dart';
 
 class VolunteerRegistrationScreen extends StatefulWidget {
   const VolunteerRegistrationScreen({super.key});
@@ -212,18 +213,10 @@ await SupabaseService.setRole(
 
                 const _FieldLabel('Chronic condition experience'),
 
-                DropdownButtonFormField<String>(
-                  initialValue: _condition,
-                  decoration:
-                      const InputDecoration(hintText: 'Select condition'),
-                  items: kChronicConditions
-                      .map(
-                        (c) => DropdownMenuItem(
-                          value: c,
-                          child: Text(c),
-                        ),
-                      )
-                      .toList(),
+                AppDropdown(
+                  value: _condition,
+                  hint: 'Select your condition',
+                  options: kChronicConditions,
                   onChanged: (v) => setState(() => _condition = v),
                   validator: (v) => v == null ? 'Required' : null,
                 ),
@@ -248,18 +241,10 @@ await SupabaseService.setRole(
 
                 const _FieldLabel('Preferred language'),
 
-                DropdownButtonFormField<String>(
-                  initialValue: _language,
-                  decoration:
-                      const InputDecoration(hintText: 'Select language'),
-                  items: kLanguages
-                      .map(
-                        (l) => DropdownMenuItem(
-                          value: l,
-                          child: Text(l),
-                        ),
-                      )
-                      .toList(),
+                AppDropdown(
+                  value: _language,
+                  hint: 'Select language',
+                  options: kLanguages,
                   onChanged: (v) => setState(() => _language = v),
                   validator: (v) => v == null ? 'Required' : null,
                 ),
