@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import '../theme/app_theme.dart';
 import '../../backend/services/supabase_service.dart';
 
 /// Full detail view of one Volunteer application.
@@ -144,44 +144,46 @@ Future<void> _showRejectDialog() async {
       String rejectionReason = '';
 
       return AlertDialog(
-        title: const Text('Reject Application'),
-
+        backgroundColor: AppColors.fieldFill,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: AppColors.fieldBorder),
+        ),
+        title: const Text(
+          'Reject Application',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textDark,
+          ),
+        ),
         content: TextField(
           maxLines: 4,
-
-          // Store the entered text directly instead of using
-          // a TextEditingController inside the temporary dialog.
           onChanged: (value) {
             rejectionReason = value;
           },
-
           decoration: const InputDecoration(
-            labelText: 'Reason for rejection',
-            hintText:
-                'Enter the reason for rejecting this application',
-            alignLabelWithHint: true,
+            hintText: 'Enter the reason for rejecting this application',
           ),
         ),
-
+        actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         actions: [
           TextButton(
-            onPressed: () {
-              Navigator.of(dialogContext).pop();
-            },
+            onPressed: () => Navigator.of(dialogContext).pop(),
             child: const Text('Cancel'),
           ),
-
-          FilledButton(
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size(100, 44),
+            ),
             onPressed: () {
               final reason = rejectionReason.trim();
 
-              // A rejection reason is required.
               if (reason.isEmpty) {
                 ScaffoldMessenger.of(dialogContext).showSnackBar(
                   const SnackBar(
-                    content: Text(
-                      'Please enter a rejection reason.',
-                    ),
+                    content: Text('Please enter a rejection reason.'),
                   ),
                 );
                 return;
