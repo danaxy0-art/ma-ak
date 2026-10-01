@@ -140,52 +140,45 @@ class _VolunteerApplicationsScreenState
                         'Unknown Volunteer';
 
                 return Card(
+                  elevation: 0,
+                  color: AppColors.fieldFill,
+                  surfaceTintColor: Colors.transparent,
+                  margin: EdgeInsets.zero,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    side: const BorderSide(color: AppColors.fieldBorder),
+                  ),
                   child: ListTile(
-                    contentPadding:
-                        const EdgeInsets.all(16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    contentPadding: const EdgeInsets.all(16),
                     leading: const CircleAvatar(
+                      backgroundColor: AppColors.selectedCardFill,
+                      foregroundColor: AppColors.primaryNavy,
                       child: Icon(Icons.person_outline),
                     ),
-
-                    // Previously the condition was used as the title.
-                    // The applicant's actual name is more useful here.
                     title: Text(
                       name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: const TextStyle(fontWeight: FontWeight.w700),
                     ),
-
-                    // Keep the condition visible underneath the name,
-                    // together with the current application status.
                     subtitle: Padding(
-                      padding:
-                          const EdgeInsets.only(top: 6),
+                      padding: const EdgeInsets.only(top: 6),
                       child: Text(
                         '$condition\nStatus: $status',
+                        style: const TextStyle(color: AppColors.textMuted),
                       ),
                     ),
-                    trailing:
-                        const Icon(Icons.chevron_right),
+                    trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
                     onTap: () async {
-                      // Wait until the Admin closes the details screen.
-                      // They may have approved or rejected the application.
                       await Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) =>
-                              VolunteerApplicationDetailsScreen(
+                          builder: (_) => VolunteerApplicationDetailsScreen(
                             application: application,
                           ),
                         ),
                       );
-
-                      // Reload after returning so any new approval or
-                      // rejection status appears immediately.
-                      if (mounted) {
-                        setState(
-                          () => _loadApplications(),
-                        );
-                      }
+                      if (mounted) setState(() => _loadApplications());
                     },
                   ),
                 );
