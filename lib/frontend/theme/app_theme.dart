@@ -88,6 +88,15 @@ class AppTheme {
           foregroundColor: AppColors.primaryNavy,
         ),
       ),
+      cardTheme: const CardThemeData(
+        elevation: 0,
+        color: AppColors.fieldFill,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+          side: BorderSide(color: AppColors.fieldBorder),
+        ),
+      ),
     );
   }
 }
